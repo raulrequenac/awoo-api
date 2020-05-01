@@ -7,6 +7,8 @@ const companiesController = require('../controllers/companies.controller')
 const eventsController = require('../controllers/events.controller')
 const matchesController = require('../controllers/matches.controller')
 
+router.get('/', (_, res) => res.json())
+
 //Users
 router.post('/users/register', uploadCloud.array('images'), usersController.register)
 router.get('/users/validate/:validateToken', usersController.validate)
