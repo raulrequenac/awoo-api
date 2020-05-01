@@ -16,9 +16,9 @@ const transporter = nodemailer.createTransport({
 
 module.exports.sendValidateEmail = (targetUser) => {
   transporter.sendMail({
-      from: `"Chizu" <${user}>`,
+      from: `"Awoo" <${user}>`,
       to: targetUser.email,
-      subject: 'Bienvenido a Chizu!',
+      subject: 'Bienvenido a Awoo!',
       html: `
       <h1>Bienvenido</h1>
       <a href='${APP_HOST}/users/validate/${targetUser.validateToken}'>Confirm account</a>
