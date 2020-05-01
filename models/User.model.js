@@ -51,7 +51,9 @@ const userSchema = new mongoose.Schema({
 
 encryptPassword(userSchema)
 
-userSchema.methods.checkPassword = (password) =>  bcrypt.compare(password, this.password)
+userSchema.methods.checkPassword = function (password) {
+  return bcrypt.compare(password, this.password)
+} 
 
 userSchema.virtual('role').get(function() {
   return "user";

@@ -40,7 +40,7 @@ router.get('/events/:eventId/enrolled', eventsController.getUsersEnrolled)
 
 //Matches
 router.get('/users/matches', matchesController.getMatches)
-router.get('/users/matches/:userId/events-in-common', eventsController.eventsInCommon)
+router.get('/users/matches/:userId/events-in-common', matchesController.eventsInCommon)
 router.post('/users/like/:userId', matchesController.like)
 router.post('/users/dislike/:userId', matchesController.dislike)
 

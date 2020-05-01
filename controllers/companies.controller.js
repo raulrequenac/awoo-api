@@ -1,4 +1,4 @@
-const Company = require('../models/company.model')
+const Company = require('../models/Company.model')
 const createError = require('http-errors')
 const mailer = require('../config/mailer.config')
 const passport = require('passport')

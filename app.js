@@ -3,7 +3,6 @@ require('dotenv').config();
 const createError = require('http-errors');
 const express = require('express');
 const logger = require('morgan');
-const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const cors = require('./config/cors.config');
 const passportConfig = require('./config/passport.config');
@@ -22,7 +21,6 @@ app.use(cors);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(session);
 app.use(passportConfig);
 

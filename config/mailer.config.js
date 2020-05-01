@@ -1,7 +1,6 @@
-const nodemailer = require('nodemailer');
-const { PORT_ORIGIN } = require('../constants')
+const nodemailer = require('nodemailer')
 
-const APP_HOST = process.env.APP_HOST || PORT_ORIGIN
+const APP_HOST = process.env.APP_HOST || 'http://localhost:3000'
 
 const user = process.env.MAIL_USER
 const pass = process.env.MAIL_PASS
