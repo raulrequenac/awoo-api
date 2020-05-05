@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const categories = require('../constants/categories')
 
 const eventSchema = new mongoose.Schema({
-  company: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Company',
     required: true

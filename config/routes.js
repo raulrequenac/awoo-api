@@ -21,18 +21,6 @@ router.post('/users/login/google',
 router.get('/users/login/google/callback', usersController.socialLogin)
 router.post('/users/logout', usersController.logout)
 
-//Companies
-router.post('/companies/register', uploadCloud.array('images'), companiesController.register)
-router.get('/companies/validate/:validateToken', companiesController.validate)
-router.patch('/companies/edit', companiesController.edit)
-router.post('/companies/delete', companiesController.delete)
-router.post('/companies/login', companiesController.register)
-router.post('/companies/login/google', 
-  passport.authenticate('google-companies', {scope:['openid', 'profile', 'email']})
-)
-router.get('/companies/login/google/callback', companiesController.socialLogin)
-router.post('/companies/logout', companiesController.logout)
-
 //Events
 router.post('/events/create', eventsController.create)
 router.patch('/events/:eventId/edit', eventsController.edit)

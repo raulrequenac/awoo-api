@@ -4,7 +4,7 @@ const Like = require('../models/Like.model')
 const Dislike = require('../models/Dislike.model')
 
 module.exports.create = (req, res, next) => {
-  const event = new Event(req.body)
+  const event = new Event({ user: req.currentUser.id, ...req.body })
 
   event
     .populate('enroll')
