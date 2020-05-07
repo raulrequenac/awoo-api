@@ -108,10 +108,10 @@ userSchema.methods.checkPassword = function (password) {
   return bcrypt.compare(password, this.password)
 } 
 
-companySchema.virtual('events', {
+userSchema.virtual('events', {
   ref: 'Event',
   localField: 'id',
-  foreignField: 'company',
+  foreignField: 'user',
   justOne: false,
 })
 
