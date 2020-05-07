@@ -1,47 +1,47 @@
 const passport = require('passport')
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const GoogleStrategy = require("passport-google-oauth20").Strategy
+const FBStrategy = require('passport-facebook').Strategy;
 const User = require('../models/User.model');
 
-passport.use('google-users',
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/users/login/google/callback"
-    },
-    (accessToken, refreshToken, profile, done) => {
-      // to see the structure of the data in received response:
-      // console.log("Google account details:", profile);
+passport.use('google-users', new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID,
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  callbackURL: '/users/login/google/callback',
+}, authenticateOAuthUser))
 
-      User.findOne({ social: { google: profile.id }})
-        .then(user => {
-          if (user) {
-            done(null, user);
-            return;
+passport.use('facebook-auth', new FBStrategy({
+  clientID: process.env.FB_AUTH_CLIENT_ID,
+  clientSecret: process.env.FB_AUTH_CLIENT_SECRET,
+  callbackURL: '/users/login/facebook/callback',
+  profileFields: ['displayName', 'emails']
+}, authenticateOAuthUser));
+
+const authenticateOAuthUser = (_, _, profile, done) => {
+  User.findOne({ s[`social.${profile.provider.toLowerCase()}`]: profile.id })
+    .then(user => {
+      if (user) {
+        next(null, user)
+      } else {
+        const newUser = new User({
+          name: profile.displayName,
+          images: profile.photos.map(image => image.value),
+          age: profile.birthday,
+          email: profile.emails[0].value,
+          validated: true,
+          password: profile.provider + Math.random().toString(36).substring(7),
+          social: {
+            [profile.provider.toLowerCase()]: profile.id
           }
-
-          const newUser = new User({
-            name: profile.displayName,
-            images: profile.photos.map(image => image.value),
-            age: profile.birthday,
-            email: profile.emails[0].value,
-            validated: true,
-            password: profile.provider + Math.random().toString(36).substring(7),
-            social: {
-              [profile.provider.toLowerCase()]: profile.id
-            }
-          })
-
-          newUser.save()
-            .then(savedUser => {
-              done(null, savedUser)
-            })
-            .catch(err => done(err));
-
         })
-        .catch(err => done(err)); // closes User.findOne()
-    }
-  )
-)
+
+        return newUser.save()
+          .then(savedUser => {
+            done(null, savedUser)
+          })
+          .catch(err => next(err))
+      }
+    })
+    .catch(err => next(err))
+}
 
 module.exports = passport.initialize();
