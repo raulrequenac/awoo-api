@@ -12,7 +12,7 @@ const authenticateOAuthUser = (accessToken, refreshToken, profile, next) => {
         const newUser = new User({
           name: profile.displayName,
           images: [profile._json.picture],
-          // age: profile.birthday,
+          age: profile.birthday,
           email: profile.emails ? profile.emails[0].value : profile.user.email,
           validated: true,
           password: profile.provider + Math.random().toString(36).substring(7),
@@ -20,6 +20,7 @@ const authenticateOAuthUser = (accessToken, refreshToken, profile, next) => {
             [profile.provider.toLowerCase()]: profile.id
           }
         })
+        console.log(newUser)
 
         return newUser.save()
           .then(savedUser => {
