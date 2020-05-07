@@ -12,7 +12,7 @@ const authenticateOAuthUser = (accessToken, refreshToken, profile, next) => {
         const newUser = new User({
           name: profile.displayName,
           images: [profile._json.picture],
-          age: profile.birthday,
+          age: 18,
           email: profile.emails ? profile.emails[0].value : profile.user.email,
           validated: true,
           password: profile.provider + Math.random().toString(36).substring(7),
