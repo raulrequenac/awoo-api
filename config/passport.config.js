@@ -12,11 +12,11 @@ passport.use('google-users', new GoogleStrategy({
 passport.use('facebook-auth', new FBStrategy({
   clientID: process.env.FB_AUTH_CLIENT_ID,
   clientSecret: process.env.FB_AUTH_CLIENT_SECRET,
-  callbackURL: '/users/login/facebook/callback',
+  callbackURL: '/users/login/callback/facebook',
   profileFields: ['displayName', 'emails']
 }, authenticateOAuthUser));
 
-const authenticateOAuthUser = (_, _, profile, done) => {
+const authenticateOAuthUser = (accessToken, refreshToken, profile, done) => {
   User.findOne({ s[`social.${profile.provider.toLowerCase()}`]: profile.id })
     .then(user => {
       if (user) {
