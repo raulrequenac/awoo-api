@@ -42,7 +42,8 @@ const userSchema = new mongoose.Schema({
     default: true
   },
   social: {
-    google: String
+    google: String,
+    facebook: String
   },
   age: {
     type: Date,

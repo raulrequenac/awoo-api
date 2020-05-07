@@ -3,7 +3,7 @@ const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy
 const FBStrategy = require('passport-facebook').Strategy;
 const User = require('../models/User.model');
 
-const authenticateOAuthUser = (accessToken, refreshToken, profile, done) => {
+const authenticateOAuthUser = (accessToken, refreshToken, profile, next) => {
   User.findOne({ [`social.${profile.provider.toLowerCase()}`]: profile.id })
     .then(user => {
       if (user) {
@@ -11,9 +11,9 @@ const authenticateOAuthUser = (accessToken, refreshToken, profile, done) => {
       } else {
         const newUser = new User({
           name: profile.displayName,
-          images: profile.photos.map(image => image.value),
-          age: profile.birthday,
-          email: profile.emails[0].value,
+          images: [profile._json.picture],
+          // age: profile.birthday,
+          email: profile.emails ? profile.emails[0].value : profile.user.email,
           validated: true,
           password: profile.provider + Math.random().toString(36).substring(7),
           social: {
@@ -23,7 +23,7 @@ const authenticateOAuthUser = (accessToken, refreshToken, profile, done) => {
 
         return newUser.save()
           .then(savedUser => {
-            done(null, savedUser)
+            next(null, savedUser)
           })
           .catch(err => next(err))
       }
