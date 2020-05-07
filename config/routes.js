@@ -3,7 +3,6 @@ const router = express.Router()
 const passport = require('passport')
 const uploadCloud = require('./cloudinary.config')
 const usersController = require('../controllers/users.controller')
-const companiesController = require('../controllers/companies.controller')
 const eventsController = require('../controllers/events.controller')
 const matchesController = require('../controllers/matches.controller')
 
