@@ -1,23 +1,10 @@
 const passport = require('passport')
-const GoogleStrategy = require("passport-google-oauth20").Strategy
+const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy
 const FBStrategy = require('passport-facebook').Strategy;
 const User = require('../models/User.model');
 
-passport.use('google-users', new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: '/users/login/google/callback',
-}, authenticateOAuthUser))
-
-passport.use('facebook-auth', new FBStrategy({
-  clientID: process.env.FB_AUTH_CLIENT_ID,
-  clientSecret: process.env.FB_AUTH_CLIENT_SECRET,
-  callbackURL: '/users/login/callback/facebook',
-  profileFields: ['displayName', 'emails']
-}, authenticateOAuthUser));
-
 const authenticateOAuthUser = (accessToken, refreshToken, profile, done) => {
-  User.findOne({ s[`social.${profile.provider.toLowerCase()}`]: profile.id })
+  User.findOne({ [`social.${profile.provider.toLowerCase()}`]: profile.id })
     .then(user => {
       if (user) {
         next(null, user)
@@ -43,5 +30,30 @@ const authenticateOAuthUser = (accessToken, refreshToken, profile, done) => {
     })
     .catch(err => next(err))
 }
+
+passport.use(
+  "google-users",
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/users/login/google/callback",
+    },
+    authenticateOAuthUser
+  )
+)
+
+passport.use(
+  "facebook-auth",
+  new FBStrategy(
+    {
+      clientID: process.env.FB_AUTH_CLIENT_ID,
+      clientSecret: process.env.FB_AUTH_CLIENT_SECRET,
+      callbackURL: "/users/login/callback/facebook",
+      profileFields: ["displayName", "emails"],
+    },
+    authenticateOAuthUser
+  )
+)
 
 module.exports = passport.initialize();
