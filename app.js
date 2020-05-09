@@ -33,8 +33,12 @@ app.use((req, _, next) => {
 /**
  * Configure routes
  */
-const router = require('./config/routes.js');
+const router = require('./config/routes/index.routes.js');
+const usersRouter = require("./config/routes/users.routes.js")
+const eventsRouter = require("./config/routes/events.routes.js")
 app.use('/', router);
+app.use("/users", usersRouter)
+app.use("/events", eventsRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

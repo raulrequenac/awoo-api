@@ -1,17 +1,17 @@
-const passport = require('passport')
+const passport = require("passport")
 const GoogleStrategy = require("passport-google-oauth2").Strategy
-const FBStrategy = require('passport-facebook').Strategy;
-const User = require('../models/User.model');
+const FBStrategy = require("passport-facebook").Strategy
+const User = require("../models/User.model")
 
 const authenticateOAuthUser = (accessToken, refreshToken, profile, next) => {
   const email = profile.emails ? profile.emails[0].value : profile.user.email
   User.findOne({
     $or: [
       { email: email },
-      { [`social.${profile.provider.toLowerCase()}`]: profile.id }
-    ]
+      { [`social.${profile.provider.toLowerCase()}`]: profile.id },
+    ],
   })
-    .then(user => {
+    .then((user) => {
       if (user) {
         next(null, user)
       } else {
@@ -23,18 +23,14 @@ const authenticateOAuthUser = (accessToken, refreshToken, profile, next) => {
           validated: true,
           password: profile.provider + Math.random().toString(36).substring(7),
           social: {
-            [profile.provider.toLowerCase()]: profile.id
-          }
+            [profile.provider.toLowerCase()]: profile.id,
+          },
         })
 
-        return newUser.save()
-          .then(savedUser => {
-            next(null, savedUser)
-          })
-          .catch(err => next(err))
+        return newUser.save().then((savedUser) => next(null, savedUser))
       }
     })
-    .catch(err => next(err))
+    .catch((err) => next(err))
 }
 
 passport.use(
@@ -62,4 +58,4 @@ passport.use(
   )
 )
 
-module.exports = passport.initialize();
+module.exports = passport.initialize()
