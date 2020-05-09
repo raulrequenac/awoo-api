@@ -100,7 +100,7 @@ module.exports.socialLogin = (req, res, next) => {
       next(error)
     } else {
       req.session.user = user
-      res.redirect(process.env.ORIGIN || 'http://localhost:3000')
+      res.redirect(process.env.SOCIAL_LOGIN || 'http://localhost:3000/home')
     }
   })(req, res, next)
 }
