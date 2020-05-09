@@ -97,10 +97,10 @@ module.exports.socialLogin = (req, res, next) => {
   const socialProvider = req.params.provider
   passport.authenticate(`${socialProvider}-auth`, (error, user) => {
     if (error) {
-      next(error)
+      res.redirect(process.env.SOCIAL_LOGIN || 'http://localhost:3000')
     } else {
       req.session.user = user
-      res.redirect(process.env.SOCIAL_LOGIN || 'http://localhost:3000/home')
+      res.redirect((process.env.SOCIAL_LOGIN || 'http://localhost:3000') + '/home')
     }
   })(req, res, next)
 }
