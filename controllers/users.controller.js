@@ -95,7 +95,7 @@ module.exports.login = (req, res, next) => {
 
 module.exports.socialLogin = (req, res, next) => {
   const socialProvider = req.params.provider
-  passport.authenticate(`${socialProvider}-users`, (error, user) => {
+  passport.authenticate(`${socialProvider}-auth`, (error, user) => {
     if (error) {
       next(error)
     } else {

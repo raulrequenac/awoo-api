@@ -20,13 +20,13 @@ router.post("/users/delete", usersController.delete)
 router.post("/users/login", usersController.login)
 router.post(
   "/users/login/google",
-  passport.authenticate("google-users", {
+  passport.authenticate("google-auth", {
     scope: ["openid", "profile", "email"],
   })
 )
 router.post(
   "/users/login/facebook",
-  passport.authenticate("facebook-users", { scope: ["email"] })
+  passport.authenticate("facebook-auth", { scope: ["email"] })
 )
 router.get("/users/login/:provider/callback", usersController.socialLogin)
 router.post("/users/logout", usersController.logout)
