@@ -1,19 +1,19 @@
-const User = require('../models/User.model')
-const Like = require('../models/Like.model')
-const Dislike = require('../models/Dislike.model')
-const createError = require('http-errors')
-const mailer = require('../config/mailer.config')
-const passport = require('passport')
+const User = require("../models/User.model")
+const Like = require("../models/Like.model")
+const Dislike = require("../models/Dislike.model")
+const createError = require("http-errors")
+const mailer = require("../config/mailer.config")
+const passport = require("passport")
 
 module.exports.register = (req, res, next) => {
   const user = new User(req.body)
 
   user
-    .populate('likes')
-    .populate('dislikes')
-    .populate('role')
+    .populate("likes")
+    .populate("dislikes")
+    .populate("role")
     .save()
-    .then(user => {
+    .then((user) => {
       mailer.sendValidateEmail(user)
       res.status(201).json(user)
     })
@@ -21,26 +21,23 @@ module.exports.register = (req, res, next) => {
 }
 
 module.exports.validate = (req, res, next) => {
-  User.findOneAndUpdate({validateToken: req.params.validateToken}, {validated: true}, {new: true})
-    .then(user => res.status(200).json(user))
+  User.findOneAndUpdate(
+    { validateToken: req.params.validateToken },
+    { validated: true },
+    { new: true }
+  )
+    .then((user) => res.status(200).json(user))
     .catch(next)
 }
 
 module.exports.edit = (req, res, next) => {
-  const {
-    name,
-    email,
-    password,
-    description,
-    preferences,
-    images
-  } = req.body
-  
+  const { name, email, password, description, preferences, images } = req.body
+
   User.findById(req.currentUser.id)
-    .populate('likes')
-    .populate('dislikes')
-    .populate('role')
-    .then(user => {
+    .populate("likes")
+    .populate("dislikes")
+    .populate("role")
+    .then((user) => {
       if (name) user.name = name
       if (email) user.email = email
       if (password) user.password = password
@@ -54,8 +51,14 @@ module.exports.edit = (req, res, next) => {
 }
 
 module.exports.delete = (req, res, next) => {
-  const deleteLikesPromise = Like.deleteMany({user: req.currentUser.id, userLiked: req.currentUser.id})
-  const deleteDislikesPromise = Dislike.deleteMany({user: req.currentUser.id, userLiked: req.currentUser.id})
+  const deleteLikesPromise = Like.deleteMany({
+    user: req.currentUser.id,
+    userLiked: req.currentUser.id,
+  })
+  const deleteDislikesPromise = Dislike.deleteMany({
+    user: req.currentUser.id,
+    userLiked: req.currentUser.id,
+  })
   const deleteUserPromise = User.findByIdAndRemove(req.currentUser.id)
 
   Promise.all([deleteLikesPromise, deleteDislikesPromise, deleteUserPromise])
@@ -71,23 +74,22 @@ module.exports.login = (req, res, next) => {
   const { email, password } = req.body
 
   if (!email || !password) {
-    throw createError(400, 'missing credentials')
+    throw createError(400, "missing credentials")
   }
 
   User.findOne({ email: email })
-    .then(user => {
+    .then((user) => {
       if (!user) {
-        throw createError(404, 'user not found')
+        throw createError(404, "user not found")
       } else {
-        return user.checkPassword(password)
-          .then(match => {
-            if (!match) {
-              throw createError(400, 'invalid password')
-            } else {
-              req.session.user = user
-              res.json(user)
-            }
-          })
+        return user.checkPassword(password).then((match) => {
+          if (!match) {
+            throw createError(400, "invalid password")
+          } else {
+            req.session.user = user
+            res.json(user)
+          }
+        })
       }
     })
     .catch(next)
@@ -97,10 +99,12 @@ module.exports.socialLogin = (req, res, next) => {
   const socialProvider = req.params.provider
   passport.authenticate(`${socialProvider}-auth`, (error, user) => {
     if (error) {
-      res.redirect(process.env.SOCIAL_LOGIN || 'http://localhost:3000')
+      res.redirect(process.env.SOCIAL_LOGIN || "http://localhost:3000")
     } else {
       req.session.user = user
-      res.redirect((process.env.SOCIAL_LOGIN || 'http://localhost:3000') + '/home')
+      res.redirect(
+        (process.env.SOCIAL_LOGIN || "http://localhost:3000") + "/home"
+      )
     }
   })(req, res, next)
 }

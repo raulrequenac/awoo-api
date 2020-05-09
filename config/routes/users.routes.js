@@ -5,6 +5,7 @@ const uploadCloud = require("../cloudinary.config")
 const usersController = require("../../controllers/users.controller")
 const matchesController = require("../../controllers/matches.controller")
 
+router.get('/current', (req, res) => res.json(req.currentUser))
 router.post(
   "/register",
   uploadCloud.array("images"),
